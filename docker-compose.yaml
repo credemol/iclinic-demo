@@ -1,0 +1,26 @@
+version: '2'
+services:
+  iclinic-mysql:
+    build:
+      context: ./
+      dockerfile: docker/mysql-dockerfile
+    image: "iclinic-mysql:1.0.0"
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysqlrootpwd
+      - MYSQL_USER=iclinic
+      - MYSQL_PASSWORD=iclinic
+      - MYSQL_DATABASE=iclinic
+    ports:
+      - "3306:3306"
+    container_name: iclinic-mysql
+    
+  iclinic-demo:
+    image: "credemol/iclinic-demo"
+    depends_on:
+      - iclinic-mysql
+    environment:
+      - ICLINIC_DEMO_JDBCURL=jdbc:mysql://iclinic-mysql:3306/iclinic?useSSL=false
+      - ICLINIC_DEMO_DBUSER=iclinic
+      - ICLINIC_DEMO_DBPW=iclinic
+    ports:
+      - "8080:8080"    
